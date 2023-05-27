@@ -25,3 +25,11 @@ exports.postBrand = (req, res, next) => {
     })
     .catch(err => next(err))
 }
+
+exports.getBrandById = (req, res, next) => {
+    Brands.findById(req.params.id)
+    .then(data => {
+        res.status(200).json(data);
+    })
+    .catch(err => next(err))
+}
