@@ -24,9 +24,9 @@ exports.patchAdmin = (req, res, next) => {
     }).catch(err => next(err))
 }
 
-// exports.deleteAdmin = (req, res, next) => {
-//     Admins.deleteOne({_id: req.params.id})
-//     .then(data => {
-//         res.status(200).json({"message": "admin deleted successfully"})
-//     }).catch(err => next(err))
-// }
+exports.deleteAdmin = (req, res, next) => {
+    Admins.deleteOne({_id: req.params.id})
+    .then(data => {
+        res.status(200).json({"message": "admin deleted successfully"})
+    }).catch(err => next(err))
+}
