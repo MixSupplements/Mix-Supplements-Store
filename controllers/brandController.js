@@ -41,3 +41,11 @@ exports.patchBrand = (req, res, next) => {
     })
     .catch(err => next(err))
 }
+
+exports.deleteBrand = (req, res, next) => {
+    Brands.deleteOne({_id: req.params.id})
+    .then(data => {
+        res.status(200).json({"message": "brand deleted Successfully"})
+    })
+    .catch(err => next(err))
+}

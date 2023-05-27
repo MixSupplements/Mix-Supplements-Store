@@ -10,4 +10,5 @@ router.route('/brands')
 router.route('/brand/:id')
     .get(controller.getBrandById)
     .patch(controller.patchBrand)
+    .delete(controller.deleteBrand)
 module.exports = router
