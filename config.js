@@ -6,6 +6,16 @@ require('dotenv').config()
 
 /*********** Run all DB schemas ***********/
 
+require('./models/adminModel');
+require('./models/brandModel');
+require('./models/categoresModels');
+require('./models/customerModel');
+require('./models/ordersModel');
+require('./models/ordersModel');
+require('./models/productModel');
+require('./models/productStoreModel');
+require('./models/reviewModel');
+require('./models/storeModel');
 
 mongoose.connect(process.env.DBURI)
     .then(() => {
