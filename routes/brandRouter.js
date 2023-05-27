@@ -9,4 +9,5 @@ router.route('/brands')
     .post(controller.postBrand)
 router.route('/brand/:id')
     .get(controller.getBrandById)
+    .patch(controller.patchBrand)
 module.exports = router

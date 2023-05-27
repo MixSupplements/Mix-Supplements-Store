@@ -33,3 +33,11 @@ exports.getBrandById = (req, res, next) => {
     })
     .catch(err => next(err))
 }
+
+exports.patchBrand = (req, res, next) => {
+    Brands.findByIdAndUpdate(req.params.id, req.body)
+    .then(data => {
+        res.status(200).json({"message": "brand updated successfully"});
+    })
+    .catch(err => next(err))
+}
