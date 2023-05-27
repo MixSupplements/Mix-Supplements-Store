@@ -12,8 +12,8 @@ const ProductDetails = new mongoose.Schema({
 
 const ProductSchema = new mongoose.Schema({
     name: { type: String, required: true },
-    brand: { Type: mongoose.SchemaTypes.ObjectId, ref: "Brand" },
-    category: { Type: mongoose.SchemaTypes.ObjectId, ref: "Category", required: true },
+    brand: { type: mongoose.SchemaTypes.ObjectId, ref: "Brand" },
+    category: { type: mongoose.SchemaTypes.ObjectId, ref: "Category", required: true },
     price: { type: Number, required: true },
     quantity: { type: Number, default: 0 },
     sale: { type: Number, default: 1 },
