@@ -8,9 +8,17 @@ const router = express.Router();
 
 router.route('/brands')
     .get(controller.getBrands)
-    .post(controller.postBrand)
+    .post(validation.postBrand,
+        validator,
+        controller.postBrand)
 router.route('/brand/:id')
-    .get(controller.getBrandById)
-    .patch(controller.patchBrand)
-    .delete(controller.deleteBrand)
+    .get(validation.getBrandById,
+        validator,
+        controller.getBrandById)
+    .patch(validation.patchBrand,
+        validator,
+        controller.patchBrand)
+    .delete(validation.deleteBrand,
+        validator,
+        controller.deleteBrand)
 module.exports = router
