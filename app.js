@@ -15,7 +15,8 @@ app.use(express.json());
 
 
 /***************** Routes ***************/
-
+const customerRouter = require('./routes/customerRoutes');
+app.use(customerRouter);
 
 
 app.use(NotFoundMiddleware);
