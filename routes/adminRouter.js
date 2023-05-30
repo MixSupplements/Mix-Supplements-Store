@@ -1,13 +1,21 @@
 const express = require('express');
 
+const validation = require('../middlewares/validations/brandValidation');
+const validator = require('../middlewares/validations/validator');
 const controller = require('../controllers/adminController');
 
 const router = express.Router();
 
 router.route('/admin')
-    .post(controller.postAdmin)
+    .post(validation.postAdmin,
+        validator,
+        controller.postAdmin)
 router.route('/admin/:id')
-    .patch(controller.patchAdmin)
-    .delete(controller.deleteAdmin)
+    .patch(validation.patchAdmin,
+        validator,
+        controller.patchAdmin)
+    .delete(validation.deleteAdmin,
+        validator,
+        controller.deleteAdmin)
 
 module.exports = router;
