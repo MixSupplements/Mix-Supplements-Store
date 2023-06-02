@@ -25,8 +25,6 @@ const customerSchema = new mongoose.Schema({
     timestamps: true
 });
 
-module.exports = mongoose.model('Customer', customerSchema);
-
 customerSchema.pre('save', async function (next) {
     if (!this.isModified('password'))
         return next();
@@ -38,3 +36,5 @@ customerSchema.pre('save', async function (next) {
         next();
     } catch (error) { next(error); }
 });
+
+module.exports = mongoose.model('Customer', customerSchema);
