@@ -14,7 +14,7 @@ const ShippingSFeesSchema = new mongoose.Schema({
     required: true,
   },
   shippingTime: {
-    type: Date,
+    type: String,
     required: true,
   },
 });

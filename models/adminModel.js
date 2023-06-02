@@ -38,3 +38,4 @@ adminSchema.pre('updateOne', async function (next) {
 });
 
 module.exports = mongoose.model('Admin', adminSchema);
+
