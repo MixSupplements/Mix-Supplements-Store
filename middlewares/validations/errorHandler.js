@@ -5,7 +5,6 @@ module.exports = (request, response, next) => {
 
     if (!errors.isEmpty())
     {
-        console.log(errors);
         const error = new Error('Validation failed');
         error.status = 422;
         error.errors = errors.array().map((error => error = error.msg));
