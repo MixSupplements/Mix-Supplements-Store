@@ -19,11 +19,11 @@ const customerSchema = new mongoose.Schema({
     phoneNumber: String,
     addresses: [addressSchema],
     wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }],
+    cart: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }],
+    deleted: { type: Boolean, default: false }
 }, {
     timestamps: true
 });
-
-module.exports = mongoose.model('Customer', customerSchema);
 
 customerSchema.pre('save', async function (next) {
     if (!this.isModified('password'))
@@ -36,3 +36,5 @@ customerSchema.pre('save', async function (next) {
         next();
     } catch (error) { next(error); }
 });
+
+module.exports = mongoose.model('Customer', customerSchema);
