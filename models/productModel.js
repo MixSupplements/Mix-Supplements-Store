@@ -10,6 +10,11 @@ const ProductDetails = new mongoose.Schema({
     flavor: String,
 }, { _id: false })
 
+const ReviewsSchema = new mongoose.Schema({
+    id: { type: mongoose.SchemaTypes.ObjectId, ref: "Review" },
+    score: { type: Number, enum: [1, 2, 3, 4, 5] },
+}, { _id: false })
+
 const ProductSchema = new mongoose.Schema({
     name: { type: String, required: true },
     brand: { type: mongoose.SchemaTypes.ObjectId, ref: "Brand" },
@@ -18,14 +23,13 @@ const ProductSchema = new mongoose.Schema({
     quantity: { type: Number, default: 0 },
     sale: { type: Number, default: 1 },
     description: { type: String, required: true },
-    images: [{ type: String, required: true }],
+    images: [{ type: String }],
     details: ProductDetails,
-    rating: Number, // to be detected
-    reviews: [{
-        id: { type: mongoose.SchemaTypes.ObjectId, ref: "Review" },
-        scores: { type: Number, enum: [1, 2, 3, 4, 5] },
-    }
-    ]
+    rating: { type: Number, default: 0 }, // to be detected while adding new reviews
+    deleted: { type: Boolean, default: false },
+    reviews: [{ type: ReviewsSchema }]
+}, {
+    timestamps: true
 })
 
 mongoose.model("Product", ProductSchema);
