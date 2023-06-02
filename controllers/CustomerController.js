@@ -5,13 +5,13 @@ const Order = mongoose.model('Order');
 /***********************************************************************
  * dummy middleware to add customers to DB
  */
-exports.add = (req, res, next) => {
+exports.add = (request, response, next) => {
 
-    let data = req.body;
+    let data = request.body;
     let customer = new Customer(data);
     customer.save()
         .then((data) => {
-            res.status(201).json(data);
+            response.status(201).json(data);
         }).catch(error => next(error));
 }
 
@@ -20,37 +20,37 @@ exports.add = (req, res, next) => {
  * 
  * ** needs to be refactored to get the current user without passing the id
  */
-exports.getCurrent = (req, res, next) => {
-    Customer.findById(req.params.id)
+exports.getCurrent = (request, response, next) => {
+    Customer.findById(request.params.id)
         .then(data => {
-            res.status(200).json(data);
+            response.status(200).json(data);
         }).catch(error => next(error));
 }
 
 /************************************************************************
  * Get all orders for certain user
  */
-exports.getOrders = (req, res, next) => {
-    Order.find({ customerId: req.params.id })
-        .then(data => res.status(200).json(data))
+exports.getOrders = (request, response, next) => {
+    Order.find({ customerId: request.params.id })
+        .then(data => response.status(200).json(data))
         .catch(error => next(error));
 }
 
 /************************************************************************
  * Update some of customer data
  */
-exports.update = (req, res, next) => {
-    let { id, ...data } = req.body;
+exports.update = (request, response, next) => {
+    let { id, ...data } = request.body;
     Customer.updateOne({ _id: id }, { $set: data })
-        .then(data => res.status(200).json(data))
+        .then(data => response.status(200).json(data))
         .catch(error => next(error));
 }
 
 /************************************************************************
  * Delete customer (soft deletion)
  */
-exports.destroy = (req, res, next) => {
-    Customer.updateOne({ _id: req.body.id, deleted: false },
+exports.destroy = (request, response, next) => {
+    Customer.updateOne({ _id: request.body.id, deleted: false },
         { deleted: true, $unset: { email: 1 } })
         .then(data => {
             if (data.matchedCount == 0)
@@ -61,7 +61,7 @@ exports.destroy = (req, res, next) => {
             }
             else
             {
-                res.status(200).json("User Deleted");
+                response.status(200).json("User Deleted");
             }
         })
         .catch(error => next(error));
