@@ -13,6 +13,8 @@ const orderRouter=require("./Routes/orderRoute");
 const customerRouter = require('./routes/customerRoutes');
 const productRouter = require('./routes/productRoute');
 const brandRouter = require('./routes/brandRouter');
+const cartRouter = require('./routes/cartRouter');
+
 
 const NotFoundMiddleware = require("./middlewares/NotFoundMiddleware");
 const ErrorMiddleware = require("./middlewares/ErrorMiddleware");
@@ -27,7 +29,7 @@ app.use(shippingFeesRouter);
 app.use(orderRouter)
 app.use(customerRouter);
 app.use(productRouter);
-
+app.use(cartRouter);
 app.use(brandRouter);
 
 app.use(NotFoundMiddleware);
