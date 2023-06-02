@@ -5,12 +5,14 @@ const express = require("express");
 const morgan = require("morgan");
 const mongoose = require("mongoose");
 
+
 // Routers Layer
 const categoryRouter = require("./routes/categoresRouter");
 const shippingFeesRouter = require("./routes/shippingFeesRouter");
 const orderRouter=require("./Routes/orderRoute");
 const customerRouter = require('./routes/customerRoutes');
 const productRouter = require('./routes/productRoute');
+const brandRouter = require('./routes/brandRouter');
 
 const NotFoundMiddleware = require("./middlewares/NotFoundMiddleware");
 const ErrorMiddleware = require("./middlewares/ErrorMiddleware");
@@ -26,7 +28,7 @@ app.use(orderRouter)
 app.use(customerRouter);
 app.use(productRouter);
 
-
+app.use(brandRouter);
 
 app.use(NotFoundMiddleware);
 app.use(ErrorMiddleware);
