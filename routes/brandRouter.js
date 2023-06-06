@@ -1,7 +1,7 @@
 const express = require('express');
 
 const validation = require('../middlewares/validations/brandValidation');
-const validator = require('../middlewares/validations/validator');
+const validator = require('../middlewares/validations/errorHandler');
 const controller = require('../controllers/brandController');
 
 const router = express.Router();
