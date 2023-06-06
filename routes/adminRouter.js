@@ -1,6 +1,6 @@
 const express = require('express');
 
-const validation = require('../middlewares/validations/brandValidation');
+const validation = require('../middlewares/validations/adminValidation');
 const validator = require('../middlewares/validations/errorHandler');
 const controller = require('../controllers/adminController');
 
