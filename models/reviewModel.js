@@ -8,8 +8,8 @@ const typeCustomer = new mongoose.Schema({
 const schema = new mongoose.Schema({
   productId: { type: mongoose.Types.ObjectId, ref: "Product" },
   customer: typeCustomer,
-  score: { type: Number, enum: [1, 2, 3, 4, 5] },
-  comment: String,
+  score: { type: Number,required: true , enum: [1, 2, 3, 4, 5] },
+  comment: {type: String ,required: true },
 });
 
 mongoose.model("Review", schema);
