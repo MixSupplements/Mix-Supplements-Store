@@ -33,7 +33,7 @@ exports.addShippingGovernate = (request, response, next) => {
 exports.updateShippingGovernate = (request, response, next) => {
   ShippingFee.findOneAndUpdate({ _id: request.params.id }, request.body)
     .then((data) => {
-      if (data == null) throw new error("category not found");
+      if (data == null) throw new error("Shipping not found");
       else response.status(200).json(data);
     })
     .catch((error) => next(error));
