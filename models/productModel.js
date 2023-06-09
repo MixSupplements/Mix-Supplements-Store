@@ -23,7 +23,7 @@ const ProductSchema = new mongoose.Schema({
     quantity: { type: Number, default: 0 },
     sale: { type: Number, default: 1 },
     description: { type: String, required: true },
-    images: [{ type: String }],
+    images: [{ type: Object }],
     details: ProductDetails,
     rating: { type: Number, default: 0 }, // to be detected while adding new reviews
     deleted: { type: Boolean, default: false },
