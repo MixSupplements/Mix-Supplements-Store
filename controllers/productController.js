@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 
 const Product = mongoose.model('Product');
 
-
 module.exports.getAllProducts = async (request, response, next) => {
     try {
         const products = await Product.find({ deleted: false });
@@ -18,7 +17,7 @@ module.exports.getProductById = async (request, response, next) => {
         if (productById)
             response.status(200).json({ message: "sucessfully get product by id", productById })
         else
-            throw new Error("Product doesn't exist");
+            throw Object.assign(new Error("Product doesn't exist"), { status: 404 });
     } catch (error) {
         next(error);
     }
@@ -40,7 +39,7 @@ module.exports.updateProduct = async (request, response, next) => {
         if (updatedProduct)
             response.status(200).json({ message: "sucessfully update product", updatedProduct });
         else
-            throw new Error("Product doesn't exist");
+            throw Object.assign(new Error("Product doesn't exist"), { status: 404 });
     } catch (error) {
         next(error);
     }
@@ -57,7 +56,7 @@ module.exports.deleteProduct = async (request, response, next) => {
         if (deletedProduct)
             response.status(200).json({ message: "sucessfully delete product", deletedProduct })
         else
-            throw new Error("Product doesn't exist");
+            throw Object.assign(new Error("Product doesn't exist"), { status: 404 });
     } catch (error) {
         next(error);
     }

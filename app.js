@@ -11,12 +11,13 @@ const registerRouter = require("./routes/registerRoute");
 const categoryRouter = require("./routes/categoresRouter");
 const shippingFeesRouter = require("./routes/shippingFeesRouter");
 const orderRouter = require("./Routes/orderRoute");
-const customerRouter = require("./routes/customerRoutes");
-const productRouter = require("./routes/productRoute");
-const brandRouter = require("./routes/brandRouter");
-const cartRouter = require("./routes/cartRouter");
-const adminRouter = require("./routes/adminRouter");
-const wishlistRouter = require("./routes/wishlistRouter");
+const customerRouter = require('./routes/customerRoutes');
+const productRouter = require('./routes/productRoute');
+const brandRouter = require('./routes/brandRouter');
+const cartRouter = require('./routes/cartRouter');
+const adminRouter = require('./routes/adminRouter');
+const wishlistRouter = require('./routes/wishlistRouter');
+const uploadRouter = require('./routes/uploadRouter');
 
 const authenticationMW = require("./middlewares/authenticationMW");
 const NotFoundMiddleware = require("./middlewares/NotFoundMiddleware");
@@ -48,6 +49,7 @@ app.use(cartRouter);
 app.use(brandRouter);
 app.use(adminRouter);
 app.use(wishlistRouter);
+app.use(uploadRouter);
 
 // log out route
 app.use(logoutRouter);
