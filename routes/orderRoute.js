@@ -6,9 +6,7 @@ const guard = require('./../middlewares/authorization');
 router.get("/orders", guard.isAdmin, controller.index);
 router.get("/orders/:orderNumber", controller.getOrder);
 
-router.route("/order")
-  .post(controller.create)
-  .patch(controller.update)
-  .delete(controller.destroy)
+router.route("/order").post(controller.create);
+router.route("/order").patch(controller.updateStatus);
 
 module.exports = router;

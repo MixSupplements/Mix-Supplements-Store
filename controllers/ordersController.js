@@ -100,6 +100,7 @@ module.exports.create = async (req, res, next) => {
 
 module.exports.getOrder = (req, res, next) => {
     Order.findOne({ orderNumber: req.params.orderNumber })
+        .select("-__v")
         .then((foundedOrder) => {
             console.log(foundedOrder);
             if (foundedOrder === null)
@@ -112,33 +113,49 @@ module.exports.getOrder = (req, res, next) => {
             {
                 res.status(200).json(foundedOrder);
             }
-        }).catch((error) => {
-            error.status = 422;
-            next(error);
-        })
+        }).catch((error) => next(error))
 }
 
-module.exports.update = (req, res, next) => {
+module.exports.updateStatus = async (req, res, next) => {
     const { id, status } = req.body;
-    Order.updateOne({ _id: id }, { status: status })
-        .then((data) => {
-            res.status(200).json({ message: "Updated Order", data });
-        }).catch((error) => {
-            error.status = 422;
-            next(error)
-        })
-}
 
-module.exports.destroy = (req, res, next) => {
-    Order.findOneAndUpdate(
-        { _id: req.params.id, deleted: false },
-        { $set: { deleted: true } },
-        { new: true })
-        .then((deleted) => {
-            if (deleted === null) throw new Error("Order Not Exist")
-            res.status(200).json({ message: "Deleted Order", deleted })
-        }).catch((err) => {
-            err.status = 422;
-            next(err)
-        })
+    try
+    {
+        const order = await Order.findOne({ _id: id, status: { $ne: "Cancelled" } });
+        if (order === null)
+        {
+            const error = new Error('Order not found');
+            error.status = 404;
+            throw error;
+        }
+
+        // status management
+        const validStatusTransitions = {
+            Cancelled: ['Pending', 'Confirmed', 'Out for delivery'],
+            Confirmed: ['Pending'],
+            'Out for delivery': ['Confirmed'],
+            Delivered: ['Out for delivery'],
+            Completed: ['Delivered'],
+        };
+
+        if (!validStatusTransitions[status])
+        {
+            const error = new Error('Invalid status');
+            error.status = 422;
+            throw error;
+        }
+
+        const allowedTransitions = validStatusTransitions[status];
+        if (!allowedTransitions.includes(order.status))
+        {
+            const error = new Error('Invalid status transition');
+            error.status = 422;
+            throw error;
+        }
+
+        order.status = status;
+        await order.save();
+        res.status(200).json({ message: 'Order status updated successfully' });
+
+    } catch (error) { next(error) }
 }
