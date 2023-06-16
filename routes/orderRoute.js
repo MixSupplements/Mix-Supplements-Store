@@ -3,8 +3,8 @@ const controller = require("../controllers/ordersController");
 const router = express.Router();
 const guard = require('./../middlewares/authorization');
 
-router.get("/orders", guard.isAdmin, controller.getAllOrders);
-router.get("/orders/:id", controller.getOrderById);
+router.get("/orders", guard.isAdmin, controller.index);
+router.get("/orders/:orderNumber", controller.getOrder);
 
 router.route("/order")
   .post(controller.create)

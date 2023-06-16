@@ -2,14 +2,13 @@ const mongoose = require("mongoose");
 const Order = mongoose.model("Order");
 const Product = mongoose.model("Product");
 
-module.exports.getAllOrders = (req, res, next) => {
-    Order.find({ deleted: false })
+module.exports.index = (req, res, next) => {
+    Order.find()
         .select("-__v")
         .then((data) => {
-            res.status(200).json({ message: "All Orders", data })
-        }).catch((err) => {
-            err.status = 422;
-            next(err)
+            res.status(200).json(data);
+        }).catch((error) => {
+            next(error)
 
         })
 }
@@ -25,6 +24,9 @@ module.exports.create = async (req, res, next) => {
      * To do ?
      * receive only the products ids and get other data from  the DB
      * preserve data consistency ??
+     * ------------------------------------------------------------------
+     * To Refactor:
+     * All products updates must be one atomic operation (transaction ??)
      */
     try
     {
@@ -72,11 +74,6 @@ module.exports.create = async (req, res, next) => {
                         error.status = 422;
                         throw error;
                     }
-
-                    /** 
-                     * To Refactor:
-                     * All products updates must be one atomic operation (transaction ??)
-                     */
                     productInStore.quantity -= orderedProduct.quantity;
                     await productInStore.save();
                     return true;
@@ -101,11 +98,20 @@ module.exports.create = async (req, res, next) => {
     }
 }
 
-module.exports.getOrderById = (req, res, next) => {
-    Order.findOne({ _id: req.params.id, deleted: false })
+module.exports.getOrder = (req, res, next) => {
+    Order.findOne({ orderNumber: req.params.orderNumber })
         .then((foundedOrder) => {
-            if (foundedOrder === null) throw new Error("Order Does Not Exist");
-            res.status(200).json(foundedOrder)
+            console.log(foundedOrder);
+            if (foundedOrder === null)
+            {
+                let error = new Error("Order not found");
+                error.status = 404;
+                throw error;
+            }
+            else
+            {
+                res.status(200).json(foundedOrder);
+            }
         }).catch((error) => {
             error.status = 422;
             next(error);
@@ -114,13 +120,12 @@ module.exports.getOrderById = (req, res, next) => {
 
 module.exports.update = (req, res, next) => {
     const { id, status } = req.body;
-    Order.findOneAndUpdate({ _id: req.params.id, deleted: false }, req.body, { new: true })
-        .then((updated) => {
-            if (updated === null) throw new Error("Order Not Exist")
-            res.status(200).json({ message: "Updated Order", updated })
-        }).catch((err) => {
-            err.status = 422;
-            next(err)
+    Order.updateOne({ _id: id }, { status: status })
+        .then((data) => {
+            res.status(200).json({ message: "Updated Order", data });
+        }).catch((error) => {
+            error.status = 422;
+            next(error)
         })
 }
 
