@@ -1,16 +1,12 @@
 const express = require("express");
-const ordersController = require("../controllers/ordersController");
+const controller = require("../controllers/ordersController");
 const router = express.Router();
+const guard = require('./../middlewares/authorization');
 
-router
-  .route("/orders")
-  .get(ordersController.getAllOrders)
-  .post(ordersController.addOrder);
+router.get("/orders", guard.isAdmin, controller.index);
+router.get("/orders/:orderNumber", controller.getOrder);
 
-router
-  .route("/orders/:id")
-  .patch(ordersController.updateOrder)
-  .get(ordersController.getOrderById)
-  .delete(ordersController.deleteOrder);
+router.route("/order").post(controller.create);
+router.route("/order").patch(controller.updateStatus);
 
 module.exports = router;
