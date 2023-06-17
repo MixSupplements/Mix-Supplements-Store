@@ -39,7 +39,7 @@ exports.updateOneCategory = (request, response, next) => {
     .catch((error) => next(error));
 };
 
-exports.deletCategory = (request, response, next) => {
+exports.deleteCategory = (request, response, next) => {
   Category.findOneAndRemove({ _id: request.params.id })
     .then((data) => {
       if (data == null) throw new error("category not found");
