@@ -1,127 +1,145 @@
-const { body, validationResult } = require("express-validator");
+const { body, param } = require("express-validator");
 
-module.exports.addProduct = [
+module.exports.create = [
   body("name")
     .notEmpty()
-    .withMessage("name cant be blank")
+    .withMessage("Name is required")
     .isString()
-    .withMessage("name must be alphapetic"),
+    .withMessage("Name can only be alphabets"),
 
   body("brand")
-    .notEmpty()
-    .withMessage("brand can't be blank")
+    .optional()
     .isMongoId()
-    .withMessage("brand_ID must be mongoid"),
+    .withMessage("Brand ID is not valid"),
 
   body("category")
     .notEmpty()
-    .withMessage("category can't be blank")
+    .withMessage("Category ID is required")
     .isMongoId()
-    .withMessage("category_ID must be mongoid"),
+    .withMessage("Brand ID is not valid"),
 
   body("price")
     .notEmpty()
-    .withMessage("price cant be blank")
+    .withMessage("Price is required")
     .isNumeric()
-    .withMessage("price must be Number"),
+    .withMessage("Price must be Number"),
 
-  body("quantity").isInt().withMessage("Quantity must be Number"),
+  body("quantity").optional().isInt().withMessage("Quantity must be integers"),
 
-  body("sale").isNumeric().optional(),
+  body("sale").optional().isNumeric(),
 
   body("description")
     .notEmpty()
-    .withMessage("Please enter the detailss")
+    .withMessage("Product description is required")
     .isString()
     .withMessage("Description must be string"),
 
-  body("images")
-    .notEmpty()
-    .withMessage("images cant be blank")
-    .isString()
-    .withMessage("images must be string"),
-
   body("details")
-    .notEmpty()
-    .withMessage("Must enter the product detailsss")
+    .optional()
     .isObject()
-    .withMessage("details should be object"),
+    .withMessage("Details should be object"),
 
   body("details.color")
-    .notEmpty()
-    .withMessage("it can't be blank")
+    .optional()
     .isString()
-    .withMessage("color must be string"),
+    .withMessage("Color must be string"),
 
   body("details.size")
-    .notEmpty()
-    .withMessage("it can't be blank")
+    .optional()
     .isIn(["sm", "md", "lg", "xl", "xxl", "xxxl"])
-    .withMessage("size must be in [sm ,md ,lg ,xl ,xxl ,xxxl]")
+    .withMessage("Size must be one of [sm ,md ,lg ,xl ,xxl ,xxxl]")
     .optional(),
 
   body("details.weight")
-    .notEmpty()
-    .withMessage("it can't be blank")
+    .optional()
     .isString()
-    .withMessage("weight must be Number"),
+    .withMessage("Weight must be string"),
 
   body("details.material")
-    .notEmpty()
-    .withMessage("it can't be blank")
+    .optional()
     .isString()
-    .withMessage("material must be string"),
+    .withMessage("Material must be string"),
 
   body("details.origin")
-    .notEmpty()
-    .withMessage("it can't be blank")
+    .optional()
     .isString()
-    .withMessage("origin must be string"),
+    .withMessage("Origin must be string"),
 
   body("details.flavor")
-    .notEmpty()
-    .withMessage("it can't be blank")
+    .optional()
     .isString()
     .withMessage("flavor must be string"),
-
-  body("rating")
-    .notEmpty()
-    .withMessage("rating cant be blank")
-    .isNumeric()
-    .withMessage("rating must be Number"),
-
-  body("deleted")
-    .notEmpty()
-    .withMessage("select if it deleted or not ")
-    .isBoolean()
-    .withMessage("true or false only"),
-
-  body("reviews")
-    .notEmpty()
-    .withMessage("Must enter the product detailss")
-    .isArray()
-    .withMessage("reviews should be array"),
-
-  body("reviews.*.id")
-    .notEmpty()
-    .withMessage("ID can't be blank")
-    .isMongoId()
-    .withMessage("reviews_ID Must be mongo_id"),
-
-  body("reviews.*.score")
-    .notEmpty()
-    .withMessage("score can't be blank")
-    .isIn([1, 2, 3, 4, 5])
-    .withMessage("score should be [1, 2, 3, 4, 5]"),
-
-  // (req, res) => {
-  //   const errors = validationResult(req);
-  //   if (!errors.isEmpty()) {
-  //     return res.status(400).json({ errors: errors.array() });
-  //   }
-
-  //   // code to add product to database
-
-  //   res.status(200).json({ message: "Product added successfully" });
-  // },
 ];
+
+module.exports.update = [
+  param("id").isMongoId().withMessage("ID is not valid"),
+
+  body("name")
+    .optional()
+    .isString()
+    .withMessage("Name can only be alphabets"),
+
+  body("brand")
+    .optional()
+    .isMongoId()
+    .withMessage("Brand ID is not valid"),
+
+  body("category")
+    .optional()
+    .isMongoId()
+    .withMessage("Brand ID is not valid"),
+
+  body("price")
+    .optional()
+    .isNumeric()
+    .withMessage("Price must be Number"),
+
+  body("quantity").optional().isInt().withMessage("Quantity must be integers"),
+
+  body("sale").optional().isNumeric(),
+
+  body("description")
+    .optional()
+    .isString()
+    .withMessage("Description must be string"),
+
+  body("details")
+    .optional()
+    .isObject()
+    .withMessage("Details should be object"),
+
+  body("details.color")
+    .optional()
+    .isString()
+    .withMessage("Color must be string"),
+
+  body("details.size")
+    .optional()
+    .isIn(["sm", "md", "lg", "xl", "xxl", "xxxl"])
+    .withMessage("Size must be one of [sm ,md ,lg ,xl ,xxl ,xxxl]")
+    .optional(),
+
+  body("details.weight")
+    .optional()
+    .isString()
+    .withMessage("Weight must be string"),
+
+  body("details.material")
+    .optional()
+    .isString()
+    .withMessage("Material must be string"),
+
+  body("details.origin")
+    .optional()
+    .isString()
+    .withMessage("Origin must be string"),
+
+  body("details.flavor")
+    .optional()
+    .isString()
+    .withMessage("flavor must be string"),
+];
+
+module.exports.destroy = [
+  param("id").isMongoId().withMessage("ID is not valid")
+]

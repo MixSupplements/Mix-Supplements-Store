@@ -29,7 +29,7 @@ module.exports.Authenticate = async (req, res, next) => {
   {
     error.message = "Not authenticated";
     error.status = 402;
-    next(error);
+    res.status(401).json({ message: error.message, error });
   }
 }
 

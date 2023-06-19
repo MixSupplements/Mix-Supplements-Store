@@ -1,52 +1,107 @@
 const mongoose = require("mongoose");
-
+const cloudinary = require('cloudinary').v2;
 const Product = mongoose.model('Product');
 
-module.exports.getAllProducts = async (request, response, next) => {
-    try {
+module.exports.index = async (request, response, next) => {
+    try
+    {
         const products = await Product.find({ deleted: false });
-        response.status(200).json({ message: "sucessfully get products", products })
-    } catch (error) {
+        response.status(200).json(products);
+    } catch (error)
+    {
         next(error);
     }
 }
 
-module.exports.getProductById = async (request, response, next) => {
-    try {
-        const productById = await Product.findOne({ _id: request.params.id, deleted: false });
-        if (productById)
-            response.status(200).json({ message: "sucessfully get product by id", productById })
+module.exports.getOne = async (request, response, next) => {
+    try
+    {
+        const product = await Product.findOne({ _id: request.params.id, deleted: false }).select("-__v");
+        if (product)
+            response.status(200).json(product);
         else
-            throw Object.assign(new Error("Product doesn't exist"), { status: 404 });
-    } catch (error) {
+            throw Object.assign(new Error("Product not found"), { status: 404 });
+    } catch (error)
+    {
         next(error);
     }
 }
 
-module.exports.addNewProduct = async (request, response, next) => {
+module.exports.create = async (request, response, next) => {
     const productObject = new Product(request.body);
-    try {
+    try
+    {
         const newProduct = await productObject.save();
-        response.status(201).json({ message: "sucessfully add new product", newProduct })
-    } catch (error) {
+        response.status(201).json({ message: "New Product Added", newProduct })
+    } catch (error)
+    {
         next(error);
     }
 }
 
-module.exports.updateProduct = async (request, response, next) => {
-    try {
-        const updatedProduct = await Product.findByIdAndUpdate(request.params.id, request.body, { new: true });
-        if (updatedProduct)
-            response.status(200).json({ message: "sucessfully update product", updatedProduct });
+module.exports.addImage = async (request, response, next) => {
+    try
+    {
+        const product = await Product.findOneAndUpdate({ _id: request.params.id, deleted: false }, {
+            $push: {
+                images: request.body.image
+            }
+        }, { new: true })
+        if (product)
+            response.status(201).json({ message: "Image added successfully", product });
         else
-            throw Object.assign(new Error("Product doesn't exist"), { status: 404 });
-    } catch (error) {
+            throw Object.assign(new Error("Product not found"), { status: 404 });
+    } catch (error)
+    {
         next(error);
     }
 }
 
-module.exports.deleteProduct = async (request, response, next) => {
-    try {
+module.exports.removeImage = async (request, response, next) => {
+    try
+    {
+        const product = await Product.findOneAndUpdate({ _id: request.params.productId }, {
+            $pull: {
+                images: { publicId: request.params.imageId }
+            }
+        }, { new: true })
+        if (product)
+        {
+            const cloudResponse = await cloudinary.uploader.destroy(request.params.imageId, { invalidate: true });
+            if (cloudResponse.result == 'ok')
+                response.status(200).json({ message: "Image deleted successfully", product });
+            else
+                throw Object.assign(new Error('Image not found'), { status: 404 });
+        }
+        else
+            throw Object.assign(new Error("Product not found"), { status: 404 });
+    } catch (error)
+    {
+        next(error);
+    }
+}
+
+module.exports.update = async (request, response, next) => {
+    try
+    {
+        const updatedProduct = await Product.findOneAndUpdate(
+            { _id: request.params.id, deleted: false },
+            request.body,
+            { new: true }
+        );
+        if (updatedProduct)
+            response.status(200).json({ message: "Product updated", updatedProduct });
+        else
+            throw Object.assign(new Error("Product not found"), { status: 404 });
+    } catch (error)
+    {
+        next(error);
+    }
+}
+
+module.exports.destroy = async (request, response, next) => {
+    try
+    {
         const deletedProduct = await Product.findOneAndUpdate(
             { _id: request.params.id, deleted: false },
             {
@@ -54,10 +109,11 @@ module.exports.deleteProduct = async (request, response, next) => {
             }
             , { new: true })
         if (deletedProduct)
-            response.status(200).json({ message: "sucessfully delete product", deletedProduct })
+            response.status(200).json({ message: "Product deleted" })
         else
-            throw Object.assign(new Error("Product doesn't exist"), { status: 404 });
-    } catch (error) {
+            throw Object.assign(new Error("Product not found"), { status: 404 });
+    } catch (error)
+    {
         next(error);
     }
 }

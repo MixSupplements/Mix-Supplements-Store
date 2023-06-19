@@ -21,11 +21,11 @@ const ProductSchema = new mongoose.Schema({
     category: { type: mongoose.SchemaTypes.ObjectId, ref: "Category", required: true },
     price: { type: Number, required: true },
     quantity: { type: Number, default: 0 },
-    sale: { type: Number, default: 1 },
+    sale: { type: Number, default: 0 },
     description: { type: String, required: true },
     images: [{ type: Object }],
     details: ProductDetails,
-    rating: { type: Number, default: 0 }, // to be detected while adding new reviews
+    rating: { type: Number, default: 0 },
     deleted: { type: Boolean, default: false },
     reviews: [{ type: ReviewsSchema }]
 }, {
