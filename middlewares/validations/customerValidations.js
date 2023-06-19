@@ -7,7 +7,7 @@ exports.register = [
 
     body('lastName')
         .notEmpty().withMessage('Last name is required')
-        .isAlpha().withMessage('Name must be characters only'),
+        .isAlpha().withMessage('Name must be alphabets only'),
 
     body('email')
         .notEmpty().withMessage('Email is required')
@@ -33,10 +33,6 @@ exports.register = [
 ];
 
 exports.updateValidations = [
-    body('id')
-        .notEmpty().withMessage('First name is required')
-        .isMongoId().withMessage('ID is not valid'),
-
     body('firstName')
         .optional()
         .isAlpha().withMessage('Name must be alphabets only'),
@@ -56,10 +52,4 @@ exports.updateValidations = [
     body('phoneNumber')
         .optional()
         .isMobilePhone().withMessage('Invalid phone number'),
-];
-
-exports.deleteValidations = [
-    body('id')
-        .notEmpty().withMessage('ID is required')
-        .isMongoId().withMessage('ID is not valid')
 ];
