@@ -15,6 +15,7 @@ const brandRouter = require('./routes/brandRouter');
 const cartRouter = require('./routes/cartRouter');
 const adminRouter = require('./routes/adminRouter');
 const wishlistRouter = require('./routes/wishlistRouter');
+const reviewRouter = require('./routes/reviewRouter');
 
 const NotFoundMiddleware = require("./middlewares/NotFoundMiddleware");
 const ErrorMiddleware = require("./middlewares/ErrorMiddleware");
@@ -37,6 +38,7 @@ app.use(cartRouter);
 app.use(brandRouter);
 app.use(adminRouter);
 app.use(wishlistRouter);
+app.use(reviewRouter);
 
 //error middlewares
 app.use(NotFoundMiddleware);
