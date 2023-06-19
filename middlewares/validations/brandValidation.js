@@ -1,18 +1,23 @@
 const { param, body } = require("express-validator");
 
-exports.postBrand = [
-    body("name").isAlpha('en-US', { ignore: ' ' }).withMessage("brand name should alphabetical")
+exports.add = [
+    body("name")
+        .isAlpha('en-US', { ignore: ' ' }).withMessage("Brand name should only be alphabets")
 ]
 
-exports.getBrandById = [
-    param('id').isMongoId().withMessage("brand id should be a mongo id")
+exports.getOne = [
+    param('id')
+        .isMongoId().withMessage("Brand ID is not valid")
 ]
 
-exports.patchBrand = [
-    param('id').isMongoId().withMessage("brand id should be a mongo id"),
-    body("name").optional().isAlpha('en-US', { ignore: ' ' }).withMessage("brand name should alphabetical")
+exports.update = [
+    param('id')
+        .isMongoId().withMessage("Brand ID is not valid"),
+    body("name")
+        .optional().isAlpha('en-US', { ignore: ' ' }).withMessage("Brand name should only be alphabets")
 ]
 
-exports.deleteBrand = [
-    param('id').isMongoId().withMessage("brand id should be a mongo id")
+exports.destroy = [
+    param('id')
+        .isMongoId().withMessage("Brand ID is not valid")
 ]

@@ -1,19 +1,20 @@
 const express = require('express');
-
-const validation = require('../middlewares/validations/brandValidation');
-const validator = require('../middlewares/validations/errorHandler');
+const validations = require('../middlewares/validations/brandValidation');
+const errorHandler = require('../middlewares/validations/errorHandler');
+const uploader = require('../middlewares/uploadMiddleware');
 const controller = require('../controllers/brandController');
-const guard = require('./../middlewares/authorization');
-
+const guard = require('../middlewares/AuthMiddleware');
 
 const router = express.Router();
 
-router.route('/brands')
-    .get(guard.isAdmin, controller.getBrands)
-    .post(guard.isAdmin, validation.postBrand, validator, controller.postBrand)
-router.route('/brand/:id')
-    .get(validation.getBrandById, validator, controller.getBrandById)
-    .patch(guard.isAdmin, validation.patchBrand, validator, controller.patchBrand)
-    .delete(guard.isAdmin, validation.deleteBrand, validator, controller.deleteBrand)
+router.get('/brands', controller.index);
+router.get('/brand/:id', validations.getOne, errorHandler, controller.getProducts);
+
+router.post('/brand/:id/upload', guard.isAdmin, uploader, controller.addImage);
+router.delete('/brand/:id/unload/:image', guard.isAdmin, controller.removeImage);
+
+router.post('/brand', guard.isAdmin, validations.add, errorHandler, controller.add);
+router.patch('/brand/:id', guard.isAdmin, validations.update, errorHandler, controller.update);
+router.delete('/brand/:id', guard.isAdmin, validations.destroy, errorHandler, controller.destroy);
 
 module.exports = router
