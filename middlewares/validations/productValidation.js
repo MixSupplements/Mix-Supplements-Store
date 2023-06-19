@@ -1,5 +1,9 @@
 const { body, param } = require("express-validator");
 
+module.exports.search = [
+  param("searchText").notEmpty().withMessage("Search text is required")
+]
+
 module.exports.create = [
   body("name")
     .notEmpty()

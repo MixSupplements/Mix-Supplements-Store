@@ -27,6 +27,25 @@ module.exports.getOne = async (request, response, next) => {
     }
 }
 
+module.exports.search = async (request, response, next) => {
+
+    let searchText = request.params.searchText;
+    try
+    {
+        const products = await Product.find({
+            $or: [
+                { title: { $regex: searchText, $options: 'i' } },
+                { description: { $regex: searchText, $options: 'i' } },
+            ],
+            deleted: false,
+        });
+        response.status(200).json(products);
+    } catch (error)
+    {
+        next(error);
+    }
+}
+
 module.exports.create = async (request, response, next) => {
     const productObject = new Product(request.body);
     try
@@ -60,14 +79,14 @@ module.exports.addImage = async (request, response, next) => {
 module.exports.removeImage = async (request, response, next) => {
     try
     {
-        const product = await Product.findOneAndUpdate({ _id: request.params.productId }, {
+        const product = await Product.findOneAndUpdate({ _id: request.params.id }, {
             $pull: {
-                images: { publicId: request.params.imageId }
+                images: { publicId: request.params.image }
             }
         }, { new: true })
         if (product)
         {
-            const cloudResponse = await cloudinary.uploader.destroy(request.params.imageId, { invalidate: true });
+            const cloudResponse = await cloudinary.uploader.destroy(request.params.image, { invalidate: true });
             if (cloudResponse.result == 'ok')
                 response.status(200).json({ message: "Image deleted successfully", product });
             else
