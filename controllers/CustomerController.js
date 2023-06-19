@@ -2,20 +2,29 @@ const mongoose = require('mongoose');
 const Customer = mongoose.model('Customer');
 const Order = mongoose.model('Order');
 
-/***********************************************************************
- * dummy middleware to add customers to DB
+/**
+ * Register a new customers 
  */
-exports.add = (request, response, next) => {
+exports.register = (req, res, next) => {
 
-    let data = request.body;
-    let customer = new Customer(data);
-    customer.save()
-        .then((data) => {
-            response.status(201).json(data);
-        }).catch(error => next(error));
-}
+    const { firstName, lastName, email, password, phoneNumber, addresses } = req.body;
+    const newCustomer = new Customer({
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        password: password,
+        phoneNumber: phoneNumber,
+        addresses: addresses,
+    });
+    newCustomer
+        .save()
+        .then(() => {
+            res.status(201).json({ message: "Customer Registered" });
+        })
+        .catch((error) => next(error));
+};
 
-/************************************************************************
+/**
  * Get the user with id
  * 
  * ** needs to be refactored to get the current user without passing the id
@@ -27,7 +36,7 @@ exports.getCurrent = (request, response, next) => {
         }).catch(error => next(error));
 }
 
-/************************************************************************
+/**
  * Get all orders for certain user
  */
 exports.getOrders = (request, response, next) => {
@@ -36,7 +45,7 @@ exports.getOrders = (request, response, next) => {
         .catch(error => next(error));
 }
 
-/************************************************************************
+/**
  * Update some of customer data
  */
 exports.update = (request, response, next) => {
@@ -46,7 +55,7 @@ exports.update = (request, response, next) => {
         .catch(error => next(error));
 }
 
-/************************************************************************
+/**
  * Delete customer (soft deletion)
  */
 exports.destroy = (request, response, next) => {

@@ -1,6 +1,6 @@
 const { query, param, body } = require('express-validator');
 
-exports.addValidations = [
+exports.register = [
     body('firstName')
         .notEmpty().withMessage('First name is required')
         .isAlpha().withMessage('Name must be alphabets only'),
