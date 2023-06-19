@@ -1,24 +1,17 @@
 const express = require('express');
 
-const validation = require('../middlewares/validations/wishlistValidation');
-const validator = require('../middlewares/validations/errorHandler');
+const validations = require('../middlewares/validations/wishlistValidation');
+const errorHandler = require('../middlewares/validations/errorHandler');
 const controller = require('../controllers/wishlistController');
+const guard = require('../middlewares/AuthMiddleware');
 
 const router = express.Router();
 
-router.route('/wishlist/:id')
-    .get(validation.getWishlist,
-        validator,
-        controller.getWishlist)
-    .patch(validation.addTohWishlist,
-        validator,
-        controller.addTohWishlist)
-    .delete(validation.deleteWishlist,
-        validator,
-        controller.deleteWishlist)
-router.route('/wishlist/:id/:productId')
-    .patch(validation.removeFromWishlist,
-        validator,
-        controller.removeFromWishlist)
+router.get('/wishlist', guard.isCustomer, controller.index);
+router.post('/wishlist/:id', guard.isCustomer, validations.add, errorHandler, controller.add);
+router.delete('/wishlist/:id', guard.isCustomer, validations.remove, errorHandler, controller.remove);
+router.delete('/wishlist', guard.isCustomer, controller.reset);
+
+
 
 module.exports = router;

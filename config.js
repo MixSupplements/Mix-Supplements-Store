@@ -7,12 +7,12 @@ require("dotenv").config();
 /*********** Run all DB schemas ***********/
 require('./models/adminModel');
 require('./models/brandModel');
-require('./models/categoresModels');
+require('./models/categoryModels');
 require('./models/customerModel');
 require('./models/ordersModel');
 require('./models/productModel');
 require('./models/reviewModel');
-require('./models/shippingFeesModels');
+require('./models/shippingDestinationModel');
 
 mongoose
   .connect(process.env.DBURI)

@@ -14,6 +14,16 @@ const addressSchema = new mongoose.Schema(
   }
 );
 
+const cartItemSchema = new mongoose.Schema(
+  {
+    product: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
+    quantity: { type: Number, required: true, default: 1 },
+  },
+  {
+    _id: false,
+  }
+);
+
 const customerSchema = new mongoose.Schema(
   {
     firstName: { type: String, required: true },
@@ -23,7 +33,7 @@ const customerSchema = new mongoose.Schema(
     phoneNumber: String,
     addresses: [addressSchema],
     wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
-    cart: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
+    cart: [cartItemSchema],
     deleted: { type: Boolean, default: false },
     tokens: [{ type: Object }],
   },
@@ -37,12 +47,13 @@ const customerSchema = new mongoose.Schema(
  */
 customerSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
-
-  try {
+  try
+  {
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
     next();
-  } catch (error) {
+  } catch (error)
+  {
     next(error);
   }
 });
@@ -52,12 +63,14 @@ customerSchema.pre("save", async function (next) {
  */
 customerSchema.pre("updateOne", async function (next) {
   const update = this.getUpdate();
-  if (update.$set.password) {
-    try {
+  if (update.$set.password)
+  {
+    try
+    {
       const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(update.$set.password, salt);
-      this.setUpdate({ $set: { password: hashedPassword } });
-    } catch (error) {
+      update.$set.password = await bcrypt.hash(update.$set.password, salt);
+    } catch (error)
+    {
       next(error);
     }
   }

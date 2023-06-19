@@ -26,21 +26,26 @@ const parser = multer({
 
 function uploadImage(req, res, next) {
     parser.single('image')(req, res, function (err) {
-        try {
-            if (err) {
-                throw Object.assign(new Error(err.message), { status: err.http_code || 400 });
+        try
+        {
+            if (err)
+            {
+                throw Object.assign(new Error(err.message), { status: err.http_code || 422 });
             }
-            if (!req.file) {
-                throw Object.assign(new Error('Please upload an image'), { status: 400 });
+            if (!req.file)
+            {
+                throw Object.assign(new Error('Please upload an image'), { status: 422 });
             }
             cloudinary.uploader.upload(req.file.path, function (error, result) {
-                if (error) {
+                if (error)
+                {
                     throw error;
                 }
                 req.body.image = { imageUrl: result.secure_url, publicId: result.public_id };
                 next();
             });
-        } catch (err) {
+        } catch (err)
+        {
             next(err);
         }
     });

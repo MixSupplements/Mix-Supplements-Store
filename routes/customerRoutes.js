@@ -1,20 +1,16 @@
 const express = require('express');
-const router = express.Router();
 const controller = require('./../controllers/CustomerController');
 const validations = require('./../middlewares/validations/customerValidations');
 const errorHandler = require('./../middlewares/validations/errorHandler');
+const guard = require('../middlewares/AuthMiddleware');
 
-// these endpoint need to be tested after user registration 
-router.get('/user/:id', controller.getCurrent);
-router.get('/user/:id/orders', controller.getOrders);
-router.patch('/user', validations.updateValidations, errorHandler, controller.update);
-router.delete('/user', validations.deleteValidations, errorHandler, controller.destroy);
+const router = express.Router();
 
+router.post("/register", validations.register, errorHandler, controller.register);
 
-/*************************************************************
- * dummy endpoint to create Customers (until registration works)
- */
-router.post('/user', validations.addValidations, errorHandler, controller.add);
-/*********************************************************** */
+router.get('/user', guard.isCustomer, controller.getCurrent);
+router.get('/user/orders', guard.isCustomer, controller.getOrders);
+router.patch('/user/:id', guard.isCustomer, validations.updateValidations, errorHandler, controller.update);
+router.delete('/user/:id', guard.isCustomer, controller.destroy);
 
 module.exports = router;

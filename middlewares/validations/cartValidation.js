@@ -1,19 +1,22 @@
-const {param,body} = require("express-validator");
+const { param, body } = require("express-validator");
 
-exports.getCart = [
-    param("id").isMongoId().withMessage("id should be a mongo id")
+exports.add = [
+    param("id")
+        .notEmpty().withMessage("Product ID is required")
+        .isMongoId().withMessage("Product ID is not valid"),
+    body("quantity")
+        .optional()
+        .isInt({ min: 1 }).withMessage("Quantity is not valid")
 ]
 
-exports.addToCart = [
-    param("id").isMongoId().withMessage("id should be a mongo id"),
-    body("productId").isMongoId().withMessage("product id should be a mongo id")
+exports.decrease = [
+    param("id")
+        .notEmpty().withMessage("Product ID is required")
+        .isMongoId().withMessage("Product ID is not valid"),
 ]
 
-exports.deleteCart = [
-    param("id").isMongoId().withMessage("id should be a mongo id")
-]
-
-exports.removeFromCart = [
-    param("id").isMongoId().withMessage("id should be a mongo id"),
-    param("productId").isMongoId().withMessage("product id should be a mongo id")
+exports.remove = [
+    param("id")
+        .notEmpty().withMessage("Product ID is required")
+        .isMongoId().withMessage("Product ID is not valid"),
 ]
