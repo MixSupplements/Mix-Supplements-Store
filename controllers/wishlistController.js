@@ -1,37 +1,53 @@
-const express = require('express');
-const  mongoose  = require('mongoose');
+const mongoose = require('mongoose');
+const Customer = mongoose.model('Customer');
+const Product = mongoose.model('Product');
 
-const Customers = mongoose.model('Customer');
-
-exports.getWishlist = (req, res, next) => {
-    Customers.findById(req.params.id)
-    .populate('wishlist')
-    .then(data => {
-        res.status(200).json(data.wishlist);
-    })
-    .catch(err => next(err))
+exports.index = (req, res, next) => {
+    Customer.findById(req.decodedToken.id)
+        .select('wishlist')
+        .populate('wishlist')
+        .then(data => {
+            res.status(200).json(data.wishlist);
+        })
+        .catch(error => next(error))
 }
 
-exports.addTohWishlist = (req, res, next) => {
-    Customers.updateOne({_id: req.params.id},{$push:{wishlist: req.body.productId}})
-    .then(data => {
-        res.status(200).json({"message": "added product to wishlist"});
-    })
-    .catch(err => next(err))
+exports.add = async (req, res, next) => {
+    const productId = req.params.id;
+    try
+    {
+        const product = await Product.findById(productId);
+        let customer = await Customer.findById(req.decodedToken.id).select('wishlist');
+        let wishlist = customer.wishlist || [];
+
+        if (wishlist.includes(productId))
+            throw Object.assign(new Error('Product already exists in wishlist'), { status: 422 });
+
+        if (product)
+        {
+            wishlist.push(productId);
+            await customer.save();
+            res.status(200).json({ message: "Product added to wishlist" });
+        }
+        else
+        {
+            throw Object.assign(new Error('Product not found'), { status: 422 });
+        }
+    } catch (error) { next(error) }
 }
 
-exports.deleteWishlist = (req, res, next) => {
-    Customers.updateOne({_id: req.params.id}, {wishlist: []})
-    .then(data => {
-        res.status(200).json({"message": "cleared wishlist"});
-    })
-    .catch(err => next(err))
+exports.remove = (req, res, next) => {
+    Customer.updateOne({ _id: req.decodedToken.id }, { $pull: { wishlist: req.params.id } })
+        .then((data) => {
+            res.status(200).json({ message: "Product removed to wishlist", data });
+        })
+        .catch(error => next(error))
 }
 
-exports.removeFromWishlist = (req, res, next) => {
-    Customers.updateOne({_id:  req.params.id},{$pull:{wishlist: req.params.productId}})
-    .then(data => {
-        res.status(200).json({"message": "removed product from wishlist"});
-    })
-    .catch(err => next(err))
+exports.reset = (req, res, next) => {
+    Customer.updateOne({ _id: req.decodedToken.id }, { wishlist: [] })
+        .then(data => {
+            res.status(200).json({ message: "Wishlist cleared" });
+        })
+        .catch(error => next(error))
 }
