@@ -7,7 +7,7 @@ const morgan = require("morgan");
 const authRouter = require('./routes/authRouter');
 
 const categoryRouter = require("./routes/categoryRouter");
-const shippingFeesRouter = require("./routes/shippingFeesRouter");
+const shippingDestinationRouter = require("./routes/shippingDestinationRouter");
 const orderRouter = require("./Routes/orderRoute");
 const customerRouter = require('./routes/customerRoutes');
 const productRouter = require('./routes/productRoute');
@@ -29,7 +29,7 @@ app.use(express.json(), express.urlencoded({ extended: true }));
 app.use(authRouter);
 
 app.use(categoryRouter);
-app.use(shippingFeesRouter);
+app.use(shippingDestinationRouter);
 app.use(orderRouter);
 app.use(customerRouter);
 app.use(productRouter);

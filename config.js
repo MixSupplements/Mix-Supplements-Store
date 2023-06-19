@@ -12,7 +12,7 @@ require('./models/customerModel');
 require('./models/ordersModel');
 require('./models/productModel');
 require('./models/reviewModel');
-require('./models/shippingFeesModels');
+require('./models/shippingDestinationModel');
 
 mongoose
   .connect(process.env.DBURI)

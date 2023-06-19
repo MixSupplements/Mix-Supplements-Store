@@ -1,13 +1,31 @@
 const { body } = require("express-validator");
 
-exports.editShipping = [
+exports.add = [
   body("governorate")
+    .notEmpty().withMessage("Governorate is required")
     .isAlpha("en-US", { ignore: " " })
-    .withMessage("Must be alphapetic [a,b,c,..]"),
+    .withMessage("Governorate name can only be alphabets"),
 
-  body("fees").isNumeric().withMessage("Must be numbers"),
+  body("fees")
+    .notEmpty().withMessage("Fees is required")
+    .isNumeric().withMessage("Fees can only be numbers"),
 
-  body("active").isBoolean().withMessage("Must be True or false"),
+  body("shippingTime")
+    .notEmpty().withMessage("Shipping time is required")
+    .isString().withMessage("Shipping time can only be string"),
+];
 
-  body("shippingTime").isString().withMessage("Must be alphapetic [a,b,c,..]"),
+exports.update = [
+  body("governorate")
+    .optional()
+    .isAlpha("en-US", { ignore: " " })
+    .withMessage("Governorate name can only be alphabets"),
+
+  body("fees")
+    .optional()
+    .isNumeric().withMessage("Fees can only be numbers"),
+
+  body("shippingTime")
+    .optional()
+    .isString().withMessage("Shipping time can only be string"),
 ];
