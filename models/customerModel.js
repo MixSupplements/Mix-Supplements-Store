@@ -14,6 +14,16 @@ const addressSchema = new mongoose.Schema(
   }
 );
 
+const cartItemSchema = new mongoose.Schema(
+  {
+    product: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
+    quantity: { type: Number, required: true, default: 1 },
+  },
+  {
+    _id: false,
+  }
+);
+
 const customerSchema = new mongoose.Schema(
   {
     firstName: { type: String, required: true },
@@ -23,7 +33,7 @@ const customerSchema = new mongoose.Schema(
     phoneNumber: String,
     addresses: [addressSchema],
     wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
-    cart: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
+    cart: [cartItemSchema],
     deleted: { type: Boolean, default: false },
     tokens: [{ type: Object }],
   },
@@ -36,6 +46,7 @@ const customerSchema = new mongoose.Schema(
  * encrypt the password when the customer data are first saved on Database
  */
 customerSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
   try
   {
     const salt = await bcrypt.genSalt(10);
