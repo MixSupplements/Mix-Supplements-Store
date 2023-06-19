@@ -117,11 +117,10 @@ module.exports.getOrder = (req, res, next) => {
 }
 
 module.exports.updateStatus = async (req, res, next) => {
-    const { id, status } = req.body;
-
+    let status = req.body.status;
     try
     {
-        const order = await Order.findOne({ _id: id, status: { $ne: "Cancelled" } });
+        const order = await Order.findOne({ _id: req.params.id, status: { $ne: "Cancelled" } });
         if (order === null)
         {
             const error = new Error('Order not found');
