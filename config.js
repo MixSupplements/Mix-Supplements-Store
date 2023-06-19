@@ -13,6 +13,7 @@ require('./models/ordersModel');
 require('./models/productModel');
 require('./models/reviewModel');
 require('./models/shippingDestinationModel');
+require('./models/reviewModel');
 
 mongoose
   .connect(process.env.DBURI)

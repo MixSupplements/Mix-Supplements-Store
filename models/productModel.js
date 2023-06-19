@@ -11,9 +11,9 @@ const ProductDetails = new mongoose.Schema({
 }, { _id: false })
 
 const ReviewsSchema = new mongoose.Schema({
-    id: { type: mongoose.SchemaTypes.ObjectId, ref: "Review" },
+    _id: { type: mongoose.SchemaTypes.ObjectId, ref: "Review" },
     score: { type: Number, enum: [1, 2, 3, 4, 5] },
-}, { _id: false })
+})
 
 const ProductSchema = new mongoose.Schema({
     name: { type: String, required: true },
@@ -27,7 +27,7 @@ const ProductSchema = new mongoose.Schema({
     details: ProductDetails,
     rating: { type: Number, default: 0 },
     deleted: { type: Boolean, default: false },
-    reviews: [{ type: ReviewsSchema }]
+    reviews: [ReviewsSchema]
 }, {
     timestamps: true
 })
