@@ -13,12 +13,13 @@ exports.add = [
 
 exports.update = [
     param('id')
-        .isMongoId().withMessage("admin id should be a mongo id"),
-    body('userName').optional().isAlpha().withMessage("admin user name must be string only without numbers,spaces, or special characters"),
-    body('email').optional().isEmail().withMessage("admin email must be a proper email"),
-    body('password').optional().isStrongPassword().withMessage("admin password must be a strong password")
+        .isMongoId().withMessage("ID is not valid"),
+    body('email')
+        .optional().isEmail().withMessage("Email is not valid"),
+    body('password')
+        .optional().isStrongPassword().withMessage("Password is weak")
 ]
 
 exports.destroy = [
-    param('id').isMongoId().withMessage("admin id should be a mongo id"),
+    param('id').isMongoId().withMessage("ID is not valid"),
 ]

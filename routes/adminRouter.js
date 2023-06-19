@@ -1,26 +1,14 @@
 const express = require('express');
-
-const validation = require('../middlewares/validations/adminValidation');
-const validator = require('../middlewares/validations/errorHandler');
+const validations = require('../middlewares/validations/adminValidation');
+const errorHandler = require('../middlewares/validations/errorHandler');
 const controller = require('../controllers/adminController');
-const guard = require('./../middlewares/authorization');
+const guard = require('../middlewares/AuthMiddleware');
 
 
 const router = express.Router();
 
-router.route('/admin')
-    .post(guard.isAdmin,
-        validation.postAdmin,
-        validator,
-        controller.postAdmin)
-router.route('/admin/:id')
-    .patch(guard.isAdmin,
-        validation.patchAdmin,
-        validator,
-        controller.patchAdmin)
-    .delete(guard.isAdmin,
-        validation.deleteAdmin,
-        validator,
-        controller.deleteAdmin)
+router.post('/admin', guard.isAdmin, validations.add, errorHandler, controller.add);
+router.patch('/admin/:id', guard.isAdmin, validations.update, errorHandler, controller.update);
+router.delete('/admin/:id', guard.isAdmin, validations.destroy, errorHandler, controller.destroy);
 
 module.exports = router;

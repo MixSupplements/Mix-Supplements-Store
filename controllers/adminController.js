@@ -1,32 +1,52 @@
 const mongoose = require('mongoose');
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const Admin = mongoose.model('Admin');
 
-const Admins = mongoose.model('Admin');
+exports.add = (req, res, next) => {
+    let { username, email, password } = req.body;
 
-exports.postAdmin = (req, res, next) => {
-    let {userName, email, password} = req.body;
-
-    let newAdmin = new Admins({
-        userName: userName,
+    let admin = new Admin({
+        username: username,
         email: email,
         password: password
     })
 
-    newAdmin.save()
-    .then(data => {
-        res.status(200).json({"message": "admin added successfully"});
-    }).catch(err => next(err))
+    admin.save()
+        .then(() => {
+            res.status(200).json({ message: "Admin added successfully" });
+        }).catch(err => next(err))
 }
 
-exports.patchAdmin = (req, res, next) => {
-    Admins.findByIdAndUpdate(req.params.id, req.body)
-    .then(data => {
-        res.status(200).json({"message": "admin updated successfully"});
-    }).catch(err => next(err))
+/**
+ * can update only the email and password 
+ */
+exports.update = (req, res, next) => {
+    let { username, ...data } = req.body;
+    Admin.updateOne({ _id: req.params.id }, { $set: data })
+        .then((data) => {
+            if (data.matchedCount === 1)
+                res.status(200).json({ message: "Admin updated successfully" });
+            else 
+            {
+                let error = new Error('ID not found');
+                error.status = 422;
+                throw error;
+            }
+        }).catch(err => next(err))
 }
 
-exports.deleteAdmin = (req, res, next) => {
-    Admins.deleteOne({_id: req.params.id})
-    .then(data => {
-        res.status(200).json({"message": "admin deleted successfully"})
-    }).catch(err => next(err))
+exports.destroy = (req, res, next) => {
+    Admin.deleteOne({ _id: req.params.id })
+        .then((data) => {
+            if (data.deletedCount === 1)
+                res.status(200).json({ message: "Admin deleted successfully" });
+            else 
+            {
+                let error = new Error('ID not found');
+                error.status = 422;
+                throw error;
+            }
+
+        }).catch(error => next(error))
 }
