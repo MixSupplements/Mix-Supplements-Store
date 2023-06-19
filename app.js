@@ -6,7 +6,7 @@ const morgan = require("morgan");
 
 const authRouter = require('./routes/authRouter');
 
-const categoryRouter = require("./routes/categoresRouter");
+const categoryRouter = require("./routes/categoryRouter");
 const shippingFeesRouter = require("./routes/shippingFeesRouter");
 const orderRouter = require("./Routes/orderRoute");
 const customerRouter = require('./routes/customerRoutes');
@@ -15,7 +15,6 @@ const brandRouter = require('./routes/brandRouter');
 const cartRouter = require('./routes/cartRouter');
 const adminRouter = require('./routes/adminRouter');
 const wishlistRouter = require('./routes/wishlistRouter');
-const uploadRouter = require('./routes/uploadRouter');
 
 const NotFoundMiddleware = require("./middlewares/NotFoundMiddleware");
 const ErrorMiddleware = require("./middlewares/ErrorMiddleware");
@@ -38,7 +37,6 @@ app.use(cartRouter);
 app.use(brandRouter);
 app.use(adminRouter);
 app.use(wishlistRouter);
-app.use(uploadRouter);
 
 //error middlewares
 app.use(NotFoundMiddleware);

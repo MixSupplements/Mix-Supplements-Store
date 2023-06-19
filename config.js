@@ -7,7 +7,7 @@ require("dotenv").config();
 /*********** Run all DB schemas ***********/
 require('./models/adminModel');
 require('./models/brandModel');
-require('./models/categoresModels');
+require('./models/categoryModels');
 require('./models/customerModel');
 require('./models/ordersModel');
 require('./models/productModel');
