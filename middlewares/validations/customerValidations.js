@@ -17,7 +17,8 @@ exports.register = [
         .notEmpty().withMessage('Password is required')
         .isLength({ min: 8 }).withMessage('Password must be at least 8 characters long'),
 
-    body('phoneNumber').optional()
+    body('phoneNumber')
+        .notEmpty().withMessage('Phone Number is required')
         .isMobilePhone().withMessage('Invalid phone number'),
 
     body('addresses.*.governorate')
@@ -26,11 +27,11 @@ exports.register = [
         .notEmpty().withMessage('City is required'),
     body('addresses.*.street')
         .notEmpty().withMessage('Street is required'),
-    body('addresses.*.phoneNumber')
-        .notEmpty().withMessage('Address phone number is required'),
-    body('addresses.*.building').optional()
-        .notEmpty().withMessage('Building is required'),
 ];
+
+const isValidPhoneNumber = (phoneNumber) => {
+    return /^\d{11}$/.test(phoneNumber);
+};
 
 exports.updateValidations = [
     body('firstName')
@@ -49,7 +50,17 @@ exports.updateValidations = [
         .optional()
         .isLength({ min: 8 }).withMessage('Password must be at least 8 characters long'),
 
-    body('phoneNumber')
+    body('phoneNumbers')
         .optional()
-        .isMobilePhone().withMessage('Invalid phone number'),
+        .isArray({ min: 1 }).withMessage('Phone Numbers must be an array with at least one element')
+        .custom((phoneNumbers) => {
+            for (let i = 0; i < phoneNumbers.length; i++)
+            {
+                if (!isValidPhoneNumber(phoneNumbers[i]))
+                {
+                    return false;
+                }
+            }
+            return true;
+        })
 ];

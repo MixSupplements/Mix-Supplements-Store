@@ -7,14 +7,13 @@ const Order = mongoose.model('Order');
  */
 exports.register = (req, res, next) => {
 
-    const { firstName, lastName, email, password, phoneNumber, addresses } = req.body;
+    const { firstName, lastName, email, password, phoneNumber } = req.body;
     const newCustomer = new Customer({
         firstName: firstName,
         lastName: lastName,
         email: email,
         password: password,
-        phoneNumber: phoneNumber,
-        addresses: addresses,
+        phoneNumbers: [phoneNumber],
     });
     newCustomer
         .save()
