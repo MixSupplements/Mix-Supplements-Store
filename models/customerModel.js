@@ -6,8 +6,6 @@ const addressSchema = new mongoose.Schema(
     governorate: { type: String, required: true },
     city: { type: String, required: true },
     street: { type: String, required: true },
-    phoneNumber: { type: String, required: true },
-    building: String,
   },
   {
     _id: false,
@@ -30,7 +28,7 @@ const customerSchema = new mongoose.Schema(
     lastName: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    phoneNumber: String,
+    phoneNumbers: [String],
     addresses: [addressSchema],
     wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
     cart: [cartItemSchema],

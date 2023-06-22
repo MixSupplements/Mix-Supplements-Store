@@ -26,10 +26,6 @@ exports.register = [
         .notEmpty().withMessage('City is required'),
     body('addresses.*.street')
         .notEmpty().withMessage('Street is required'),
-    body('addresses.*.phoneNumber')
-        .notEmpty().withMessage('Address phone number is required'),
-    body('addresses.*.building').optional()
-        .notEmpty().withMessage('Building is required'),
 ];
 
 exports.updateValidations = [

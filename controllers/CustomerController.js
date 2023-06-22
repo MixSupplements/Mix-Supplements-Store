@@ -7,16 +7,15 @@ const Order = mongoose.model('Order');
  */
 exports.register = (req, res, next) => {
 
-    const { firstName, lastName, email, password, phoneNumber, addresses } = req.body;
-    const newCustomer = new Customer({
+    const { firstName, lastName, email, password, phoneNumber } = req.body;
+    const customer = new Customer({
         firstName: firstName,
         lastName: lastName,
         email: email,
         password: password,
-        phoneNumber: phoneNumber,
-        addresses: addresses,
+        phoneNumbers: phoneNumber ? [phoneNumber] : [],
     });
-    newCustomer
+    customer
         .save()
         .then(() => {
             res.status(201).json({ message: "Customer Registered" });
@@ -26,8 +25,6 @@ exports.register = (req, res, next) => {
 
 /**
  * Get the user with id
- * 
- * ** needs to be refactored to get the current user without passing the id
  */
 exports.getCurrent = (req, res, next) => {
     Customer.findById(req.decodedToken.id)
