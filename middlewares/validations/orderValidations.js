@@ -13,14 +13,6 @@ exports.create = [
         .notEmpty().withMessage("All Products IDs is required")
         .isMongoId().withMessage("Some Products IDs is not valid"),
 
-    body("products.*.name")
-        .notEmpty().withMessage("All Products names is required")
-        .isAlpha().withMessage("Products names should be alphabets only"),
-
-    body("products.*.price")
-        .notEmpty().withMessage("All Products prices is required")
-        .isNumeric().withMessage("Products prices should be numbers only"),
-
     body("products.*.quantity")
         .notEmpty().withMessage("All Products quantities is required")
         .isNumeric().withMessage("Products quantities should be numbers only"),
@@ -40,14 +32,7 @@ exports.create = [
         .notEmpty().withMessage('City is required'),
 
     body('shippingAddress.street')
-        .notEmpty().withMessage('Street is required'),
-
-    body('shippingAddress.phoneNumber')
-        .notEmpty().withMessage('Address phone number is required'),
-
-    body('shippingAddress.building')
-        .optional()
-        .notEmpty().withMessage('Building is required'),
+        .notEmpty().withMessage('Street is required')
 ]
 
 exports.updateStatus = [
