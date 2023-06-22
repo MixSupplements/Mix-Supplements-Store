@@ -18,10 +18,10 @@ module.exports.index = (req, res, next) => {
  * should check authorization , product availability and data consistency
  */
 module.exports.create = async (req, res, next) => {
-    const { customerId, products, shippingAddress, totalPrice } = req.body;
+    const { customerId, products, totalPrice, shippingAddress } = req.body;
 
     /** 
-     * To do ?
+     * To do ?  --
      * receive only the products ids and get other data from  the DB
      * preserve data consistency ??
      * ------------------------------------------------------------------
@@ -37,35 +37,14 @@ module.exports.create = async (req, res, next) => {
             error.status = 403;
             throw error;
         }
-        // Check for totalPrice consistency with the ordered products
-        const productsPrice = products.reduce((accumulator, current) => accumulator + current.price * current.quantity, 0);
-        if (totalPrice !== productsPrice)
-        {
-            const error = new Error('Order data is not valid');
-            error.status = 422;
-            throw error;
-        }
 
-        // Generate a unique order number
-        const timestamp = new Date().getTime().toString();
-        const orderNumber = `${timestamp.slice(0, 6)}-${timestamp.slice(6)}-${Math.floor(Math.random() * 1000)}`;
-
-        const orderObject = new Order({
-            orderNumber,
-            status: 'Pending',
-            totalPrice,
-            shippingAddress,
-            customerId,
-            products,
-        });
-
-        // Check order availability
+        // Check order availability and get the orderProducts data from DB
         const productsAvailability = await Promise.all(
-            orderObject.products.map(async (orderedProduct) => {
+            products.map(async (orderedProduct) => {
                 try
                 {
                     const productInStore = await Product.findOne({
-                        _id: orderedProduct.id,
+                        _id: orderedProduct._id,
                         deleted: false,
                     });
                     if (!productInStore || productInStore.quantity < orderedProduct.quantity)
@@ -74,8 +53,8 @@ module.exports.create = async (req, res, next) => {
                         error.status = 422;
                         throw error;
                     }
-                    productInStore.quantity -= orderedProduct.quantity;
-                    await productInStore.save();
+                    orderedProduct.name = productInStore.name;
+                    orderedProduct.price = productInStore.price;
                     return true;
                 } catch (error)
                 {
@@ -89,6 +68,43 @@ module.exports.create = async (req, res, next) => {
             error.status = 422;
             throw error;
         }
+
+        // Check the total price for the ordered products
+        const productsPrice = products.reduce((accumulator, current) => accumulator + current.price * current.quantity, 0);
+        if (totalPrice !== productsPrice)
+        {
+            const error = new Error('Order data is not valid');
+            error.status = 422;
+            throw error;
+        }
+
+        // Generate a unique order number
+        const timestamp = new Date().getTime().toString();
+        const orderNumber = `${timestamp.slice(0, 5)}-${timestamp.slice(5, 9)}-${timestamp.slice(9) + Math.floor(Math.random() * 10)}`;
+
+        // Update the products quantities in the Database
+        await Promise.all(products.map(async (orderedProduct) => {
+            try
+            {
+                const productInStore = await Product.findOne({
+                    _id: orderedProduct._id,
+                    deleted: false,
+                });
+
+                productInStore.quantity -= orderedProduct.quantity;
+                await productInStore.save();
+
+            } catch (error) { throw error; }
+        }))
+
+        const orderObject = new Order({
+            orderNumber: orderNumber,
+            status: 'Pending',
+            totalPrice: totalPrice,
+            shippingAddress: shippingAddress,
+            customerId: customerId,
+            products: products
+        });
 
         await orderObject.save();
         res.status(201).json({ message: 'Order placed' });

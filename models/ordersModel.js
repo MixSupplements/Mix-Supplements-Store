@@ -4,8 +4,6 @@ const typeShippingAddress = new mongoose.Schema({
     governorate: { type: String, required: true },
     city: { type: String, required: true },
     street: { type: String, required: true },
-    phoneNumber: { type: String, required: true },
-    building: String,
 }, {
     _id: false
 })
