@@ -3,6 +3,7 @@ const app = require("./config").app;
 
 const express = require("express");
 const morgan = require("morgan");
+const cors = require("cors");
 
 const authRouter = require('./routes/authRouter');
 
@@ -25,6 +26,7 @@ app.use(morgan("dev"));
 
 // settings
 app.use(express.json(), express.urlencoded({ extended: true }));
+app.use(cors());
 
 /***************** Routes ***************/
 app.use(authRouter);
