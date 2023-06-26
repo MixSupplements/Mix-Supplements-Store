@@ -10,9 +10,9 @@ exports.add = [
     .notEmpty().withMessage("Fees is required")
     .isNumeric().withMessage("Fees can only be numbers"),
 
-  body("shippingTime")
-    .notEmpty().withMessage("Shipping time is required")
-    .isString().withMessage("Shipping time can only be string"),
+  body("shippingDays")
+    .notEmpty().withMessage("Shipping days is required")
+    .isInt().withMessage("Shipping time can only be integers"),
 ];
 
 exports.update = [
@@ -25,7 +25,7 @@ exports.update = [
     .optional()
     .isNumeric().withMessage("Fees can only be numbers"),
 
-  body("shippingTime")
+  body("shippingDays")
     .optional()
-    .isString().withMessage("Shipping time can only be string"),
+    .isString().withMessage("Shipping days can only be integers"),
 ];
