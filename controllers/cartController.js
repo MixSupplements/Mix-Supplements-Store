@@ -4,9 +4,9 @@ const Product = mongoose.model('Product');
 const Customer = mongoose.model('Customer');
 
 exports.index = (req, res, next) => {
-    Customer.findOne({ _id: req.decodedToken.id, deleted: false })
+    Customer.findOne({ _id: req.decodedToken.id, deleted: false})
         .select('cart')
-        .populate('product')
+        .populate('cart.product')
         .then(cart => {
             res.status(200).json(cart);
         })
@@ -19,7 +19,7 @@ exports.index = (req, res, next) => {
  */
 exports.add = async (req, res, next) => {
     let productId = req.params.id;
-    let quantityToAdd = req.body.quantity || 1;
+    let quantityToAdd = req.body?.quantity || 1;
 
     try
     {

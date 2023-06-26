@@ -29,9 +29,9 @@ exports.register = [
         .notEmpty().withMessage('Street is required'),
 ];
 
-const isValidPhoneNumber = (phoneNumber) => {
-    return /^\d{11}$/.test(phoneNumber);
-};
+//const isValidPhoneNumber = (phoneNumber) => {
+    //return /^\d{11}$/.test(phoneNumber);
+//};
 
 exports.updateValidations = [
     body('firstName')
@@ -53,14 +53,14 @@ exports.updateValidations = [
     body('phoneNumbers')
         .optional()
         .isArray({ min: 1 }).withMessage('Phone Numbers must be an array with at least one element')
-        .custom((phoneNumbers) => {
-            for (let i = 0; i < phoneNumbers.length; i++)
-            {
-                if (!isValidPhoneNumber(phoneNumbers[i]))
-                {
-                    return false;
-                }
-            }
-            return true;
-        })
+        //.custom((phoneNumbers) => {
+            //for (let i = 0; i < phoneNumbers.length; i++)
+            //{
+                //if (!isValidPhoneNumber(phoneNumbers[i]))
+                //{
+                    //return false;
+                //}
+            //}
+            //return true;
+        //})
 ];
