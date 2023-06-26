@@ -50,26 +50,21 @@ exports.getOrders = (req, res, next) => {
  */
 exports.update = (req, res, next) => {
 
-    if (req.decodedToken.id !== req.params.id)
-    {
+    if (req.decodedToken.id !== req.params.id) {
         let error = new Error("Unauthorized");
         error.status = 403;
         next(error);
         return;
     }
 
-    let updateData = { ...req.body };
-    console.log(updateData);
-    Customer.updateOne({ _id: req.params.id, deleted: false }, { $set: updateData })
+    Customer.updateOne({ _id: req.params.id, deleted: false }, req.body)
         .then(data => {
-            if (data.matchedCount == 0)
-            {
+            if (data.matchedCount == 0) {
                 let error = new Error("User Not Found");
                 error.status = 422;
                 next(error);
             }
-            else
-            {
+            else {
                 res.status(200).json({ message: "User Updated", data });
             }
         })
@@ -81,8 +76,7 @@ exports.update = (req, res, next) => {
  */
 exports.destroy = (req, res, next) => {
 
-    if (req.decodedToken.id !== req.params.id)
-    {
+    if (req.decodedToken.id !== req.params.id) {
         let error = new Error("Unauthorized");
         error.status = 403;
         next(error);
@@ -92,14 +86,12 @@ exports.destroy = (req, res, next) => {
     Customer.updateOne({ _id: req.params.id, deleted: false },
         { deleted: true, $unset: { email: 1 } })
         .then(data => {
-            if (data.matchedCount == 0)
-            {
+            if (data.matchedCount == 0) {
                 let error = new Error("User Not Found");
                 error.status = 422;
                 next(error);
             }
-            else
-            {
+            else {
                 res.status(200).json({ message: "User Deleted" });
             }
         })
