@@ -1,11 +1,9 @@
 const mongoose = require('mongoose');
 
 const typeShippingAddress = new mongoose.Schema({
-    governorate: { type: String, required: true },
+    governorate: { type: String, required: true, lowercase: true, ref: 'ShippingDestination', field: 'governorate' },
     city: { type: String, required: true },
     street: { type: String, required: true },
-    phoneNumber: { type: String, required: true },
-    building: String,
 }, {
     _id: false
 })
@@ -23,8 +21,6 @@ const typeProductDetails = new mongoose.Schema({
 
 const typeProduct = new mongoose.Schema({
     _id: { type: mongoose.Types.ObjectId, required: true, ref: 'Product' },
-    name: { type: String, required: true },
-    price: { type: Number, required: true },
     quantity: { type: Number, required: true },
     details: { type: typeProductDetails }
 })
