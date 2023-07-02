@@ -9,6 +9,7 @@ const router = express.Router();
 router.post("/admin/login", validations.adminLogin, errorHandler, controller.adminLogin);
 router.post("/login", validations.login, errorHandler, controller.login);
 router.route("/logout").post(guard.Authenticate, controller.logout);
+router.post("/verify", controller.verify)
 
 
 module.exports = router;
