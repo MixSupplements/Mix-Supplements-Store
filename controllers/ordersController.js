@@ -1,15 +1,38 @@
 const mongoose = require("mongoose");
+const shippingDestination = mongoose.model("ShippingDestination");
 const Order = mongoose.model("Order");
 const Product = mongoose.model("Product");
 
 module.exports.index = (req, res, next) => {
-    Order.find()
+
+    const status = req.params.status;
+
+    const validStatus = ['Pending', 'Confirmed', 'Cancelled', 'Out for delivery', 'Delivered', 'Completed'];
+    if (status && !validStatus.includes(status))
+        throw Object.assign(new Error('Invalid Status'), { status: 422 });
+
+    const condition = status ? { status: status } : {};
+    Order.find(condition,
+        'orderNumber totalPrice status updatedAt customerId')
+        .populate({
+            path: 'customerId',
+            select: 'firstName lastName'
+        })
         .select("-__v")
-        .then((data) => {
-            res.status(200).json(data);
+        .lean()
+        .then((orders) => {
+            orders = orders.map(order => {
+                return {
+                    orderNumber: order.orderNumber,
+                    totalPrice: order.totalPrice,
+                    status: order.status,
+                    updatedAt: order.updatedAt,
+                    customerName: `${order.customerId.firstName} ${order.customerId.lastName}`
+                }
+            });
+            res.status(200).json(orders);
         }).catch((error) => {
             next(error)
-
         })
 }
 
@@ -21,10 +44,6 @@ module.exports.create = async (req, res, next) => {
     const { customerId, products, totalPrice, shippingAddress } = req.body;
 
     /** 
-     * To do ?  --
-     * receive only the products ids and get other data from  the DB
-     * preserve data consistency ??
-     * ------------------------------------------------------------------
      * To Refactor:
      * All products updates must be one atomic operation (transaction ??)
      */
@@ -114,22 +133,57 @@ module.exports.create = async (req, res, next) => {
     }
 }
 
-module.exports.getOrder = (req, res, next) => {
-    Order.findOne({ orderNumber: req.params.orderNumber })
-        .select("-__v")
-        .then((foundedOrder) => {
-            console.log(foundedOrder);
-            if (foundedOrder === null)
-            {
-                let error = new Error("Order not found");
-                error.status = 404;
-                throw error;
+module.exports.getOrder = async (req, res, next) => {
+
+
+    try
+    {
+        let foundOrder = await Order.findOne({ orderNumber: req.params.orderNumber })
+            .populate([{
+                path: 'customerId',
+                select: 'firstName lastName email phoneNumbers'
+            }, {
+                path: 'products._id',
+                select: 'images name price'
+            }])
+            .select("-__v")
+            .lean()
+
+
+        if (foundOrder === null)
+        {
+            let error = new Error("Order not found");
+            error.status = 404;
+            throw error;
+        }
+        else
+        {
+            const { customerId, products, ...rest } = foundOrder;
+            const shippingInfo = await shippingDestination.findOne({ governorate: foundOrder.shippingAddress.governorate })
+
+            foundOrder = {
+                ...rest,
+                customer: {
+                    _id: customerId._id,
+                    email: customerId.email,
+                    name: customerId.firstName + ' ' + customerId.lastName,
+                    phoneNumbers: customerId.phoneNumbers
+                },
+                products: products.map(({ _id, quantity }) => ({
+                    _id: _id._id,
+                    name: _id.name,
+                    price: _id.price,
+                    image: _id.images[0],
+                    quantity
+                })),
+                shipping: {
+                    fees: shippingInfo.fees,
+                    days: shippingInfo.shippingDays
+                }
             }
-            else
-            {
-                res.status(200).json(foundedOrder);
-            }
-        }).catch((error) => next(error))
+        }
+        res.status(200).json(foundOrder);
+    } catch (error) { next(error); }
 }
 
 module.exports.updateStatus = async (req, res, next) => {

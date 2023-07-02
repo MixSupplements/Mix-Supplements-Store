@@ -3,7 +3,8 @@ const app = require("./config").app;
 
 const express = require("express");
 const morgan = require("morgan");
-const cors = require("cors");
+const cors = require('cors');
+
 
 const authRouter = require('./routes/authRouter');
 
@@ -23,6 +24,9 @@ const ErrorMiddleware = require("./middlewares/ErrorMiddleware");
 
 // morgan
 app.use(morgan("dev"));
+
+// CORS
+app.use(cors());
 
 // settings
 app.use(express.json(), express.urlencoded({ extended: true }));

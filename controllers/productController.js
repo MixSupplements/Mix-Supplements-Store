@@ -34,7 +34,7 @@ module.exports.search = async (request, response, next) => {
     {
         const products = await Product.find({
             $or: [
-                { title: { $regex: searchText, $options: 'i' } },
+                { name: { $regex: searchText, $options: 'i' } },
                 { description: { $regex: searchText, $options: 'i' } },
             ],
             deleted: false,

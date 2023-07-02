@@ -32,7 +32,7 @@ exports.create = [
         .notEmpty().withMessage('City is required'),
 
     body('shippingAddress.street')
-        .notEmpty().withMessage('Street is required')
+        .notEmpty().withMessage('Street is required'),
 ]
 
 exports.updateStatus = [

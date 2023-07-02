@@ -4,7 +4,7 @@ const Product = mongoose.model('Product');
 const Customer = mongoose.model('Customer');
 
 exports.index = (req, res, next) => {
-    Customer.findOne({ _id: req.decodedToken.id, deleted: false})
+    Customer.findOne({ _id: req.decodedToken.id, deleted: false }, { _id: 0 })
         .select('cart')
         .populate('cart.product')
         .then(cart => {
