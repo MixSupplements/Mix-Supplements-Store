@@ -19,7 +19,7 @@ exports.index = (req, res, next) => {
  */
 exports.add = async (req, res, next) => {
     let productId = req.params.id;
-    let quantityToAdd = req.body.quantity || 1;
+    let quantityToAdd = req.body?.quantity || 1;
 
     try
     {
