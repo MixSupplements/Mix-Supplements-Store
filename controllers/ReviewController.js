@@ -38,7 +38,7 @@ exports.add = async (req, res, next) => {
 exports.getByProduct = (req, res, next) => {
     Review.find({ productId: req.params.id })
         .then((reviews) => {
-            res.status(200).json(reviews);
+            res.status(200).json(reviews.reverse());
         })
         .catch((error) => next(error))
 }
