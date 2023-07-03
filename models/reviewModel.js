@@ -10,6 +10,8 @@ const schema = new mongoose.Schema({
   customer: typeCustomer,
   score: { type: Number, enum: [1, 2, 3, 4, 5] },
   comment: String,
+}, {
+    timestamps: true
 });
 
 mongoose.model("Review", schema);
