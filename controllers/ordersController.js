@@ -19,6 +19,7 @@ module.exports.index = (req, res, next) => {
             select: 'firstName lastName'
         })
         .select("-__v")
+        .sort({ createdAt: -1 })
         .lean()
         .then((orders) => {
             orders = orders.map(order => {
@@ -159,7 +160,7 @@ module.exports.getOrder = async (req, res, next) => {
         else
         {
             const { customerId, products, ...rest } = foundOrder;
-            const shippingInfo = await shippingDestination.findOne({ governorate: foundOrder.shippingAddress.governorate })
+            const shippingInfo = await shippingDestination.findOne({ governorate: foundOrder.shippingAddress.governorate.toLowerCase() })
 
             foundOrder = {
                 ...rest,

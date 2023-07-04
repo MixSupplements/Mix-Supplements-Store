@@ -16,7 +16,7 @@ const ReviewsSchema = new mongoose.Schema({
 })
 
 const ProductSchema = new mongoose.Schema({
-    name: { type: String, required: true },
+    name: { type: String, required: true, lowercase: true },
     brand: { type: mongoose.SchemaTypes.ObjectId, ref: "Brand" },
     category: { type: mongoose.SchemaTypes.ObjectId, ref: "Category", required: true },
     price: { type: Number, required: true },
