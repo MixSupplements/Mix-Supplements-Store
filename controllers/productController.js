@@ -5,7 +5,13 @@ const Product = mongoose.model('Product');
 module.exports.index = async (request, response, next) => {
     try
     {
-        const products = await Product.find({ deleted: false });
+        const products = await Product.find({ deleted: false }).populate([{
+            path: "category",
+            select: "name"
+        }, {
+            path: "brand",
+            select: "name"
+        }]);
         response.status(200).json(products);
     } catch (error)
     {
