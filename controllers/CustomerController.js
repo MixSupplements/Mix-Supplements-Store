@@ -40,7 +40,26 @@ exports.getCurrent = (req, res, next) => {
 exports.getOrders = (req, res, next) => {
     Order.find({ customerId: req.decodedToken.id })
         .select("-__v")
-        .then(data => res.status(200).json(data))
+        .populate({
+            path: "products._id",
+            select: "name price"
+        })
+        .lean()
+        .then(orders => {
+            orders = orders.map(order => {
+                let { products, ...rest } = order;
+                return {
+                    ...rest,
+                    products: products.map(({ _id, quantity }) => ({
+                        _id: _id._id,
+                        name: _id.name,
+                        price: _id.price,
+                        quantity
+                    }))
+                }
+            })
+            res.status(200).json(orders)
+        })
         .catch(error => next(error));
 }
 
@@ -49,7 +68,8 @@ exports.getOrders = (req, res, next) => {
  */
 exports.update = (req, res, next) => {
 
-    if (req.decodedToken.id !== req.params.id) {
+    if (req.decodedToken.id !== req.params.id)
+    {
         let error = new Error("Unauthorized");
         error.status = 403;
         next(error);
@@ -58,12 +78,14 @@ exports.update = (req, res, next) => {
 
     Customer.updateOne({ _id: req.params.id, deleted: false }, req.body)
         .then(data => {
-            if (data.matchedCount == 0) {
+            if (data.matchedCount == 0)
+            {
                 let error = new Error("User Not Found");
                 error.status = 422;
                 next(error);
             }
-            else {
+            else
+            {
                 res.status(200).json({ message: "User Updated", data });
             }
         })
@@ -75,7 +97,8 @@ exports.update = (req, res, next) => {
  */
 exports.destroy = (req, res, next) => {
 
-    if (req.decodedToken.id !== req.params.id) {
+    if (req.decodedToken.id !== req.params.id)
+    {
         let error = new Error("Unauthorized");
         error.status = 403;
         next(error);
@@ -85,12 +108,14 @@ exports.destroy = (req, res, next) => {
     Customer.updateOne({ _id: req.params.id, deleted: false },
         { deleted: true, $unset: { email: 1 } })
         .then(data => {
-            if (data.matchedCount == 0) {
+            if (data.matchedCount == 0)
+            {
                 let error = new Error("User Not Found");
                 error.status = 422;
                 next(error);
             }
-            else {
+            else
+            {
                 res.status(200).json({ message: "User Deleted" });
             }
         })
